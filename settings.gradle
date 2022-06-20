@@ -1,0 +1,32 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)      // option B: use as dependency. old: FAIL_ON_PROJECT_REPOS -> fixed: https://github.com/realm/realm-java/issues/7374#issuecomment-809267410
+    String storageUrl = System.env.FLUTTER_STORAGE_BASE_URL ?: "https://storage.googleapis.com"
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url '/Users/huynq/Documents/NEVERCODE.IO/RepoduceProjects/AddToAppAndroidNative/my_flutter/build/host/outputs/repo'
+        }
+        maven {
+            url "$storageUrl/download.flutter.io"
+        }
+    }
+}
+rootProject.name = "AddToApp-AndroidNative"
+include ':app'
+
+// option B: use as dependency
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+        settingsDir,
+        'my_flutter/.android/include_flutter.groovy'
+))
