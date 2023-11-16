@@ -39,11 +39,7 @@ class FirstFragment : Fragment() {
 
         binding.openFlutterAct.setOnClickListener {
             startActivity(
-                //FlutterActivity.createDefaultIntent(requireActivity())
-                FlutterActivity
-                    .withNewEngine()
-                    .initialRoute("/my_route")
-                    .build(requireActivity())
+                FlutterActivity.createDefaultIntent(requireActivity())
             )
         }
     }
