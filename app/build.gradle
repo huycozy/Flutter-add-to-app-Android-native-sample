@@ -4,12 +4,13 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 34
+    namespace 'com.example.addtoapp_androidnative'
 
     defaultConfig {
         applicationId "com.example.addtoapp_androidnative"
         minSdk 21
-        targetSdk 32
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
