@@ -23,7 +23,7 @@ class FirstFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
@@ -39,7 +39,7 @@ class FirstFragment : Fragment() {
 
         binding.openFlutterAct.setOnClickListener {
             startActivity(
-                FlutterActivity.createDefaultIntent(requireActivity())
+                FlutterActivity.withCachedEngine("my_engine_id").build(requireActivity())
             )
         }
     }
