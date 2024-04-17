@@ -51,9 +51,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     // option A: build aar
-    debugImplementation 'com.example.my_flutter:flutter_debug:1.0'
-    profileImplementation 'com.example.my_flutter:flutter_profile:1.0'
-    releaseImplementation 'com.example.my_flutter:flutter_release:1.0'
+//    debugImplementation 'com.example.my_flutter:flutter_debug:1.0'
+//    profileImplementation 'com.example.my_flutter:flutter_profile:1.0'
+//    releaseImplementation 'com.example.my_flutter:flutter_release:1.0'
 
     // option B: use as dependency
     implementation project(path: ':flutter')
