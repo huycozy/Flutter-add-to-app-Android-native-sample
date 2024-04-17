@@ -1,20 +1,16 @@
 package com.example.addtoapp_androidnative
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import androidx.fragment.app.FragmentActivity
 import com.example.addtoapp_androidnative.databinding.ActivityMainBinding
+import io.flutter.embedding.android.FlutterFragment
 
-class MainActivity : AppCompatActivity() {
-
-    private lateinit var appBarConfiguration: AppBarConfiguration
+class MainActivity : FragmentActivity() {
+    private val TAG_FLUTTER_FRAGMENT = "flutter_fragment"
     private lateinit var binding: ActivityMainBinding
+    private var flutterFragment: FlutterFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,15 +18,35 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+        // Get a reference to the Activity's FragmentManager to add a new
+        // FlutterFragment, or find an existing one.
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        // Get a reference to the Activity's FragmentManager to add a new
+        // FlutterFragment, or find an existing one.
+        val fragmentManager = supportFragmentManager
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+        // Attempt to find an existing FlutterFragment,
+        // in case this is not the first time that onCreate() was run.
+
+        // Attempt to find an existing FlutterFragment,
+        // in case this is not the first time that onCreate() was run.
+        flutterFragment = fragmentManager
+            .findFragmentByTag(TAG_FLUTTER_FRAGMENT) as FlutterFragment?
+
+        // Create and attach a FlutterFragment if one does not exist.
+
+        // Create and attach a FlutterFragment if one does not exist.
+        if (flutterFragment == null) {
+
+            // No leaks with createDefault
+            //flutterFragment = FlutterFragment.createDefault();
+
+            // Leaks with cached engine
+            flutterFragment = FlutterFragment.withCachedEngine("my_engine_id").build()
+            fragmentManager
+                .beginTransaction()
+                .add(binding.fragmentContainer.id, flutterFragment!!, TAG_FLUTTER_FRAGMENT)
+                .commit()
         }
     }
 
@@ -50,9 +66,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }
 }
