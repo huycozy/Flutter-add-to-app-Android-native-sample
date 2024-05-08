@@ -36,7 +36,7 @@ class MainActivity : FragmentActivity() {
 
         // Create and attach a FlutterFragment if one does not exist.
         if (flutterFragment == null) {
-            val newFlutterFragment = FlutterFragment.withCachedEngine("my_engine_id").build<FlutterFragment>()
+            val newFlutterFragment = OurFlutterFragment()
             flutterFragment = newFlutterFragment
             fragmentManager
                 .beginTransaction()
