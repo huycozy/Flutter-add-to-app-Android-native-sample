@@ -1,60 +1,100 @@
 package com.example.addtoapp_androidnative
 
+import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import com.example.addtoapp_androidnative.databinding.ActivityMainBinding
-import io.flutter.embedding.android.FlutterActivity
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import io.flutter.embedding.android.FlutterFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    companion object {
+        // Define a tag String to represent the FlutterFragment within this
+        // Activity's FragmentManager. This value can be whatever you'd like.
+        private const val TAG_FLUTTER_FRAGMENT = "flutter_fragment"
+    }
+
+    // Declare a local variable to reference the FlutterFragment so that you
+    // can forward calls to it later.
+    private var flutterFragment: FlutterFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Inflate a layout that has a container for your FlutterFragment. For
+        // this example, assume that a FrameLayout exists with an ID of
+        // R.id.fragment_container.
+        setContentView(R.layout.my_activity_layout)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // Get a reference to the Activity's FragmentManager to add a new
+        // FlutterFragment, or find an existing one.
+        val fragmentManager: FragmentManager = supportFragmentManager
 
-        setSupportActionBar(binding.toolbar)
+        // Attempt to find an existing FlutterFragment, in case this is not the
+        // first time that onCreate() was run.
+        flutterFragment = fragmentManager
+            .findFragmentByTag(TAG_FLUTTER_FRAGMENT) as FlutterFragment?
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-
-        binding.fab.setOnClickListener { view ->
-            startActivity(
-                FlutterActivity.withCachedEngine("my_engine_id").build(this)
-            )
+        // Create and attach a FlutterFragment if one does not exist.
+        if (flutterFragment == null) {
+            val newFlutterFragment = FlutterFragment.withCachedEngine("my_engine_id").build<FlutterFragment>()
+            flutterFragment = newFlutterFragment
+            fragmentManager
+                .beginTransaction()
+                .add(
+                    R.id.fragment_container,
+                    newFlutterFragment,
+                    TAG_FLUTTER_FRAGMENT
+                )
+                .commit()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    override fun onPostResume() {
+        super.onPostResume()
+        flutterFragment!!.onPostResume()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        flutterFragment!!.onNewIntent(intent)
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+    override fun onBackPressed() {
+        flutterFragment!!.onBackPressed()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        flutterFragment!!.onRequestPermissionsResult(
+            requestCode,
+            permissions,
+            grantResults
+        )
+    }
+
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        flutterFragment!!.onActivityResult(
+            requestCode,
+            resultCode,
+            data
+        )
+    }
+
+    override fun onUserLeaveHint() {
+        flutterFragment!!.onUserLeaveHint()
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        flutterFragment!!.onTrimMemory(level)
     }
 }
